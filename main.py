@@ -54,21 +54,20 @@ class Application(tk.Frame):
       self.current_dir = os.curdir
       self.output_dir = os.path.join(self.current_dir, "output_files")
 
-      # import run_viewer as dataframe using pandas
-      self.my_list = []
+      # import run_viewer as dataframe using pandas; run_viewer contains values of interest
+      self.oswalk_dict = {}
       self.run_list = []
       self.required_cols = [1]
       self.run_viewer = pd.read_excel(self.open_input_file, engine='openpyxl')
-      print(self.run_viewer)
 
       # Append Run ID column as string to a separate empty list called run_list
       for i in self.run_viewer['col1']:
          self.run_list.append(str(i))
-      print(self.run_list)
 
       # Iterate through root directory 
       # Find files that end in .txt with os.walk   
       # append line 1 of .txt files to my_list
+      # Create dataframe containing content[0] and filepath for each
 
       self.root_dir = self.openfd
 
@@ -78,46 +77,50 @@ class Application(tk.Frame):
             self.filetypes = mimetypes.guess_type(self.file_path)
             for types in self.filetypes:
                if types == 'text/plain':
-                  print(self.file_path)
                   self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
                   self.content = self.openfile.readlines()
-                  self.my_list.append(self.content[0])
+                  self.oswalk_dict[self.content[0]] = self.file_path # store kv pairs to oswalk_dict
                else:
                   break
-               print(self.my_list)
+      print(self.oswalk_dict)
 
-      # Create dataframe of files in self.openfd
-      
+      # Create dataframe of files in self.root_dir
+      self.output_columns = ['File_Content', 'File_Content_Dir']
       self.output = datetime.datetime.now().strftime(self.output_dir + r"/output_%Y-%m-%d.csv")
-
+      
+      # Transform self.oswalk_dict to .csv
       with open(self.output, 'w', newline='') as file:
-         self.writer = csv.writer(file, delimiter="\n", quoting=csv.QUOTE_NONE)
-         self.writer.writerow(self.my_list)
-         print(self.output)
+         self.writer = csv.DictWriter(file, quoting=csv.QUOTE_NONE, fieldnames=self.output_columns)
+         self.writer.writeheader()
+         for key in self.oswalk_dict:
+            self.writer.writerow({'File_Content': key, 'File_Content_Dir': self.oswalk_dict[key]})
 
-      self.output_csv = pd.read_csv(self.output, header=None, error_bad_lines=False)
+      self.output_csv = pd.read_csv(self.output, error_bad_lines=False)
       self.output_csv_df = pd.DataFrame(self.output_csv)
       print(self.output_csv_df)
 
       # Compare dataframes
       # Compare column ID to my_list
+      # Create new column 'File_Location' and store self.file_path
 
       def check_value(x):
-         for i in self.my_list:
+         for i in self.oswalk_dict:
             if str(x) in i:
                return True
          return False
       
-      self.output_csv_df['Match'] = self.output_csv_df[0].apply(check_value)
+      self.output_csv_df['Match'] = self.output_csv_df['File_Content'].apply(check_value)
+      self.output_csv_df = self.output_csv_df[['File_Content', 'Match', 'File_Content_Dir']]
       self.output_csv_df.to_csv(self.output, index=False)
+      print(self.output_csv_df)
 
-
+     
 ################################################################
 ################# Application Instance #########################
 ################################################################
 
 root = tk.Tk()
-root.title('Completion Tracker')
+root.title('File Content Matcher')
 
 app = Application(master=root)
 
