@@ -11,6 +11,9 @@ import openpyxl
 import mimetypes
 
 class Application(tk.Frame):
+   # Welcome
+   print('\nWelcome to Content Matcher!\nPlease select directory to traverse.\nPlease select input file containing your keywords.\n')
+
    def __init__(self, master=None):
       super().__init__(master)
       self.master = master
@@ -50,8 +53,6 @@ class Application(tk.Frame):
       print(self.open_input_file)
 
    def run_script(self):
-      # Welcome
-      print('Welcome to Content Matcher!\nPlease select directory to traverse.\nPlease select input file containing your keywords.')
       # Time run_script
       start_time = time.time()
 
@@ -103,7 +104,6 @@ class Application(tk.Frame):
 
       self.output_csv = pd.read_csv(self.output, error_bad_lines=False)
       self.output_csv_df = pd.DataFrame(self.output_csv)
-      print(self.output_csv_df)
 
       # Compare dataframes
       # Compare column ID to my_list
