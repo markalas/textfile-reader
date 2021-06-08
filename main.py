@@ -8,6 +8,7 @@ import numpy as np
 import time
 import datetime
 import openpyxl
+import mimetypes
 
 class Application(tk.Frame):
    def __init__(self, master=None):
@@ -73,15 +74,17 @@ class Application(tk.Frame):
 
       for root, dirs, files in os.walk(self.root_dir, onerror=None):
          for filename in files:
-            if filename.endswith('.txt'):
-               self.file_path = os.path.join(root, filename)
-               print(self.file_path)
-               self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
-               self.content = self.openfile.readlines()
-               self.my_list.append(self.content[0])
-            else:
-               break
-            print(self.my_list)
+            self.file_path = os.path.join(root, filename)
+            self.filetypes = mimetypes.guess_type(self.file_path)
+            for types in self.filetypes:
+               if types == 'text/plain':
+                  print(self.file_path)
+                  self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
+                  self.content = self.openfile.readlines()
+                  self.my_list.append(self.content[0])
+               else:
+                  break
+               print(self.my_list)
 
       # Create dataframe of files in self.openfd
       
