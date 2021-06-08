@@ -19,7 +19,7 @@ class Application(tk.Frame):
       self.create_widgets()
 
    def create_widgets(self):
-      self.label_1 = tk.Label(self, text="Select Target Location") 
+      self.label_1 = tk.Label(self, text="Select Directory to Traverse") 
       self.label_1.pack()
       self.entry_1 = tk.Entry(self, width=30, textvariable='')
       self.entry_1.pack()
@@ -50,6 +50,11 @@ class Application(tk.Frame):
       print(self.open_input_file)
 
    def run_script(self):
+      # Welcome
+      print('Welcome to Content Matcher!\nPlease select directory to traverse.\nPlease select input file containing your keywords.')
+      # Time run_script
+      start_time = time.time()
+
       # Define current working directory and relative filepaths
       self.current_dir = os.curdir
       self.output_dir = os.path.join(self.current_dir, "output_files")
@@ -77,16 +82,17 @@ class Application(tk.Frame):
             self.filetypes = mimetypes.guess_type(self.file_path)
             for types in self.filetypes:
                if types == 'text/plain':
+                  print(f'File found here: {self.file_path}')
                   self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
                   self.content = self.openfile.readlines()
                   self.oswalk_dict[self.content[0]] = self.file_path # store kv pairs to oswalk_dict
                else:
                   break
-      print(self.oswalk_dict)
+      
 
       # Create dataframe of files in self.root_dir
       self.output_columns = ['File_Content', 'File_Content_Dir']
-      self.output = datetime.datetime.now().strftime(self.output_dir + r"/output_%Y-%m-%d.csv")
+      self.output = datetime.datetime.now().strftime(self.output_dir + r"\output_%Y-%m-%d.csv")
       
       # Transform self.oswalk_dict to .csv
       with open(self.output, 'w', newline='') as file:
@@ -113,8 +119,10 @@ class Application(tk.Frame):
       self.output_csv_df = self.output_csv_df[['File_Content', 'Match', 'File_Content_Dir']]
       self.output_csv_df.to_csv(self.output, index=False)
       print(self.output_csv_df)
-
-     
+      print('')
+      print(f'Output file can be found here: {self.output}')
+      print('')
+      print(str((time.time() - start_time)/60) + ' minutes elapsed') 
 ################################################################
 ################# Application Instance #########################
 ################################################################
