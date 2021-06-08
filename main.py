@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-import subprocess
 import pandas as pd
 import os
 import csv
@@ -108,8 +107,6 @@ class Application(tk.Frame):
       
       self.output_csv_df['Match'] = self.output_csv_df[0].apply(check_value)
       self.output_csv_df.to_csv(self.output, index=False)
-
-      #subprocess.call(['C:/Program Files (x86)/Microsoft Office/root/Office16/EXCEL.EXE','C:/Users/Mark/Documents/Coding Practice/Python/Python_Practice/Random_projects/output/output_%Y-%m-%d.csv'], shell=True)
 
 
 ################################################################
