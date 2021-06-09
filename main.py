@@ -82,13 +82,16 @@ class Application(tk.Frame):
             self.file_path = os.path.join(root, filename)
             self.filetypes = mimetypes.guess_type(self.file_path)
             for types in self.filetypes:
-               if types == 'text/plain':
-                  print(f'File found here: {self.file_path}')
-                  self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
-                  self.content = self.openfile.readlines()
-                  self.oswalk_dict[self.content[0]] = self.file_path # store kv pairs to oswalk_dict
-               else:
-                  break
+               try:
+                  if types == 'text/plain':
+                     print(f'File found here: {self.file_path}')
+                     self.openfile = open(self.file_path, 'r', encoding="utf8", errors='ignore')
+                     self.content = self.openfile.readlines()
+                     self.oswalk_dict[self.content[0]] = self.file_path # store kv pairs to oswalk_dict
+                  else:
+                     break
+               except IndexError:
+                  print("IndexError: Content Not Found")
       
 
       # Create dataframe of files in self.root_dir
@@ -96,8 +99,9 @@ class Application(tk.Frame):
       self.output = datetime.datetime.now().strftime(self.output_dir + r"\output_%Y-%m-%d.csv")
       
       # Transform self.oswalk_dict to .csv
+      
       with open(self.output, 'w', newline='') as file:
-         self.writer = csv.DictWriter(file, quoting=csv.QUOTE_NONE, fieldnames=self.output_columns)
+         self.writer = csv.DictWriter(file, quoting=csv.QUOTE_NONE, fieldnames=self.output_columns, escapechar='\\')
          self.writer.writeheader()
          for key in self.oswalk_dict:
             self.writer.writerow({'File_Content': key, 'File_Content_Dir': self.oswalk_dict[key]})
@@ -117,6 +121,7 @@ class Application(tk.Frame):
       
       self.output_csv_df['Match'] = self.output_csv_df['File_Content'].apply(check_value)
       self.output_csv_df = self.output_csv_df[['File_Content', 'Match', 'File_Content_Dir']]
+      self.output_csv_df.dropna(inplace=True)
       self.output_csv_df.to_csv(self.output, index=False)
       print(self.output_csv_df)
       print('')
