@@ -4,7 +4,6 @@ from tkinter import filedialog
 import pandas as pd
 import os
 import csv
-import numpy as np
 import time
 import datetime
 import openpyxl
@@ -65,10 +64,10 @@ class Application(tk.Frame):
       # import run_viewer as dataframe using pandas; run_viewer contains values of interest
       self.oswalk_dict = {}
       self.run_list = []
-      self.run_viewer = pd.read_excel(self.open_input_file, engine='openpyxl')
+      self.run_viewer = pd.read_excel(self.open_input_file, usecols='A:A', engine='openpyxl') # column 1 excel file
 
       # Append Run ID column as string to a separate empty list called run_list
-      for i in self.run_viewer['col1']: # run_viewer values stored in 'col1' of excel file
+      for i in self.run_viewer: # run_viewer values stored in column 1 of excel file
          self.run_list.append(str(i))
       print(f'Search values: {self.run_list}\n')
 
