@@ -26,7 +26,7 @@ Select an excel input file with search values stored in column 1 <br>
 Hit Run <br>
 <img src='https://user-images.githubusercontent.com/73659708/123165472-470e9480-d442-11eb-8aed-e8e935007137.png'>
 
-Output <br><br>
+Example Output <br><br>
 <img src='https://user-images.githubusercontent.com/73659708/123165326-175f8c80-d442-11eb-95e1-4e4f80bffff9.png'>
 
 # Limitations
