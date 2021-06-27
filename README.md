@@ -6,7 +6,7 @@ GUI app created with tkinter. The app traverses through a directory specified by
 Lines from the .txt files are then compared against an input file.
 
 # Demo
-<img src='https://media.giphy.com/media/8LhD9OvghLsxtbIFep/giphy.gif' width=50% height=auto >
+<img src='https://media.giphy.com/media/82O2d7Oe8oWpeUJObj/giphy.gif' width=50% height=auto >
 
 # Usage
 Clone this repository <br>
